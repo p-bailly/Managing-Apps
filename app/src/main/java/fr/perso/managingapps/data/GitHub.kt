@@ -13,8 +13,41 @@ class GitHubException(message: String) : IOException(message)
 /** Releases GitHub, sans bibliothèque : HttpURLConnection et org.json d'Android. */
 class GitHub(private val token: () -> String?) {
 
-    /** Dernier APK publié pour [app]. */
+    /**
+     * Dernier APK publié pour [app]. Sans jeton, par le lien de téléchargement public de GitHub :
+     * sans jeton, l'API n'accepte que 60 requêtes par heure, partagées par tous les appareils
+     * derrière la même adresse IP.
+     */
     fun latestApk(app: TrackedApp): RemoteApk {
+        if (token() == null && app.apkName != null) {
+            publicApk(app.repo, app.apkName)?.let { return it }
+        }
+        return apiApk(app)
+    }
+
+    /** Taille et date du fichier derrière « releases/latest/download » ; null si GitHub ne donne pas la date. */
+    private fun publicApk(repo: String, apkName: String): RemoteApk? {
+        val url = "https://github.com/$repo/releases/latest/download/$apkName"
+        // Requête HEAD : les redirections jusqu'au fichier sont suivies, sans rien télécharger.
+        val connection = open(url, api = false).apply { requestMethod = "HEAD" }
+        try {
+            when (connection.responseCode) {
+                HttpURLConnection.HTTP_OK -> Unit
+                HttpURLConnection.HTTP_NOT_FOUND -> throw GitHubException(
+                    "Pas de $apkName dans la dernière release (ou dépôt privé : ajoute un jeton GitHub ⚙)"
+                )
+                HttpURLConnection.HTTP_FORBIDDEN, 429 -> throw GitHubException("GitHub refuse les requêtes, réessaie plus tard")
+                else -> throw GitHubException("Erreur GitHub ${connection.responseCode}")
+            }
+            val updatedAt = connection.lastModified.takeIf { it > 0 } ?: return null
+            return RemoteApk(size = connection.contentLengthLong, updatedAt = updatedAt, downloadUrl = url, viaApi = false)
+        } finally {
+            connection.disconnect()
+        }
+    }
+
+    /** Par l'API : avec un jeton (dépôts privés, 5 000 requêtes par heure), ou sans nom de fichier connu. */
+    private fun apiApk(app: TrackedApp): RemoteApk {
         val connection = open("https://api.github.com/repos/${app.repo}/releases/latest", api = true)
         try {
             when (connection.responseCode) {
@@ -43,14 +76,16 @@ class GitHub(private val token: () -> String?) {
 
     /** Télécharge [apk] dans [destination], en signalant l'avancement (de 0 à 1). */
     fun download(apk: RemoteApk, destination: File, onProgress: (Float) -> Unit) {
-        // L'API redirige vers un lien signé du stockage de GitHub, qui refuse l'en-tête Authorization :
-        // la redirection est suivie à la main, sans le jeton.
-        var connection = open(apk.apiUrl, api = true, accept = "application/octet-stream")
-        connection.instanceFollowRedirects = false
-        if (connection.responseCode in 300..399) {
-            val location = connection.getHeaderField("Location")
-            connection.disconnect()
-            connection = open(location ?: throw GitHubException("Téléchargement impossible (redirection vide)"), api = false)
+        var connection = open(apk.downloadUrl, api = apk.viaApi, accept = "application/octet-stream")
+        if (apk.viaApi) {
+            // L'API redirige vers un lien signé du stockage de GitHub, qui refuse l'en-tête Authorization :
+            // la redirection est suivie à la main, sans le jeton.
+            connection.instanceFollowRedirects = false
+            if (connection.responseCode in 300..399) {
+                val location = connection.getHeaderField("Location")
+                connection.disconnect()
+                connection = open(location ?: throw GitHubException("Téléchargement impossible (redirection vide)"), api = false)
+            }
         }
         try {
             if (connection.responseCode != HttpURLConnection.HTTP_OK) {
@@ -99,6 +134,7 @@ internal fun parseRelease(json: String, apkName: String?): RemoteApk? {
     return RemoteApk(
         size = asset.optLong("size"),
         updatedAt = Instant.parse(asset.getString("updated_at")).toEpochMilli(),
-        apiUrl = asset.getString("url"),
+        downloadUrl = asset.getString("url"),
+        viaApi = true,
     )
 }

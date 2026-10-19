@@ -2,12 +2,13 @@ package fr.perso.managingapps.data
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.time.Instant
 
 class VersionsTest {
     private val published = Instant.parse("2026-10-19T16:15:58Z").toEpochMilli()
-    private val remote = RemoteApk(size = 1, updatedAt = published, apiUrl = "")
+    private val remote = RemoteApk(size = 1, updatedAt = published, downloadUrl = "", viaApi = false)
 
     private fun installedAt(time: Long) = InstalledVersion("1.0.16", 16, lastUpdateTime = time)
 
@@ -31,14 +32,15 @@ class VersionsTest {
         val apk = parseRelease(RELEASE, "Nimbus.apk")!!
         assertEquals(19214431L, apk.size)
         assertEquals(published, apk.updatedAt)
-        assertEquals("https://api.github.com/repos/p-bailly/Nimbus/releases/assets/656763103", apk.apiUrl)
+        assertEquals("https://api.github.com/repos/p-bailly/Nimbus/releases/assets/656763103", apk.downloadUrl)
+        assertTrue(apk.viaApi)
     }
 
     @Test
     fun `sans nom de fichier, le premier APK`() {
         assertEquals(
             "https://api.github.com/repos/p-bailly/Nimbus/releases/assets/656763103",
-            parseRelease(RELEASE, null)!!.apiUrl,
+            parseRelease(RELEASE, null)!!.downloadUrl,
         )
     }
 

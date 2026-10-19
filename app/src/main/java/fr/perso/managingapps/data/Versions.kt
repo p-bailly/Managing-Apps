@@ -14,8 +14,9 @@ data class RemoteApk(
     val size: Long,
     /** Date d'envoi du fichier sur GitHub (ms depuis 1970). */
     val updatedAt: Long,
-    /** Adresse de téléchargement par l'API (fonctionne aussi pour les dépôts privés). */
-    val apiUrl: String,
+    val downloadUrl: String,
+    /** [downloadUrl] passe par l'API GitHub (avec le jeton : dépôts privés compris). */
+    val viaApi: Boolean,
 )
 
 enum class UpdateStatus { NOT_INSTALLED, UP_TO_DATE, UPDATE_AVAILABLE }

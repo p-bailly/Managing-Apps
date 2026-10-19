@@ -28,8 +28,9 @@ bouton ⚙ › coller un jeton créé sur github.com : Settings › Developer se
 - *Repository access* : Only select repositories › les dépôts privés à suivre ;
 - *Permissions* › Repository permissions › **Contents : Read-only**.
 
-Le jeton reste sur le téléphone, dans les réglages privés de l'appli. Sans jeton, GitHub limite à
-60 requêtes par heure, soit une douzaine de vérifications : largement assez.
+Le jeton reste sur le téléphone, dans les réglages privés de l'appli. Sans jeton, l'appli lit la date
+du dernier APK par son lien de téléchargement public, et non par l'API de GitHub : celle-ci n'accepte
+que 60 requêtes par heure sans jeton, partagées par tous les appareils de la même connexion.
 
 ## Suivre une nouvelle appli
 
