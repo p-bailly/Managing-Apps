@@ -264,7 +264,9 @@ private fun TokenDialog(current: String?, onSave: (String?) -> Unit, onDismiss: 
 private fun publishedLabel(context: Context, time: Long): String {
     val now = System.currentTimeMillis()
     return if (now - time < DateUtils.WEEK_IN_MILLIS) {
-        "Publiée " + DateUtils.getRelativeTimeSpanString(time, now, DateUtils.MINUTE_IN_MILLIS)
+        // Android écrit « Il y a 2 heures », avec une majuscule.
+        "Publiée " + DateUtils.getRelativeTimeSpanString(time, now, DateUtils.MINUTE_IN_MILLIS).toString()
+            .replaceFirstChar { it.lowercase() }
     } else {
         "Publiée le " + DateUtils.formatDateTime(context, time, DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_ABBREV_MONTH)
     }
