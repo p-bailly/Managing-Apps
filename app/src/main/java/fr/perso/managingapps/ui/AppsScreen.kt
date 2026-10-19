@@ -242,8 +242,8 @@ private fun TokenDialog(current: String?, onSave: (String?) -> Unit, onDismiss: 
         text = {
             Column {
                 Text(
-                    "Nécessaire pour les dépôts privés (Nimbus). Sur github.com : Settings › Developer settings › " +
-                        "Fine-grained tokens, avec l'accès « Contents » en lecture seule à tes dépôts.",
+                    "Facultatif : nécessaire seulement pour suivre un dépôt privé. Sur github.com : Settings › " +
+                        "Developer settings › Fine-grained tokens, avec l'accès « Contents » en lecture seule.",
                 )
                 OutlinedTextField(
                     value = text,

@@ -16,20 +16,20 @@ La vérification se fait à chaque ouverture (au plus une fois par minute) et av
 1. Sur le téléphone, ouvrir
    <https://github.com/p-bailly/Managing-Apps/releases/latest/download/Managing-Apps.apk> et installer l'APK.
 2. Au premier « Mettre à jour », autoriser « Mes applis » à installer des applis inconnues (Android ouvre le réglage).
-3. Pour Nimbus (dépôt privé) : bouton ⚙ › coller un jeton GitHub (voir ci-dessous).
 
 Ensuite, « Mes applis » se met à jour elle-même, comme les autres.
 
-## Jeton GitHub (dépôts privés)
+## Jeton GitHub (facultatif)
 
-Sur github.com : Settings › Developer settings › Personal access tokens › **Fine-grained tokens** ›
-Generate new token :
+Tous les dépôts suivis sont publics : aucun jeton n'est nécessaire. Pour suivre un jour un dépôt privé,
+bouton ⚙ › coller un jeton créé sur github.com : Settings › Developer settings › Personal access tokens ›
+**Fine-grained tokens** › Generate new token :
 
-- *Repository access* : Only select repositories › **Nimbus** (et les futurs dépôts privés) ;
+- *Repository access* : Only select repositories › les dépôts privés à suivre ;
 - *Permissions* › Repository permissions › **Contents : Read-only**.
 
-Le jeton reste sur le téléphone, dans les réglages privés de l'appli. Sans jeton, les dépôts publics
-fonctionnent quand même (GitHub limite alors à 60 requêtes par heure, soit une douzaine de vérifications).
+Le jeton reste sur le téléphone, dans les réglages privés de l'appli. Sans jeton, GitHub limite à
+60 requêtes par heure, soit une douzaine de vérifications : largement assez.
 
 ## Suivre une nouvelle appli
 
