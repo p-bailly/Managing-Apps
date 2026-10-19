@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Fond de l'icône : vert nuit en dégradé -->
+<!-- Fond de l'icône : bleu nuit en dégradé -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
@@ -14,8 +14,8 @@
                 android:startY="0"
                 android:endX="108"
                 android:endY="108"
-                android:startColor="#FF17324A"
-                android:endColor="#FF0A1620" />
+                android:startColor="#FF1A2747"
+                android:endColor="#FF0A1022" />
         </aapt:attr>
     </path>
 </vector>

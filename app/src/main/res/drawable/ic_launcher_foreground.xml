@@ -1,25 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Trois applis (NBA orange, Scan turquoise, Météo bleu ciel) et une pastille verte « mise à jour ».
-     Tout tient dans la zone sûre (cercle de 66 dp au centre). -->
+<!-- « Orbite » : les applis suivies en orbite (NBA orange, Météo jaune, Scan turquoise,
+     Nimbus bleu ciel) autour d'une coche verte « à jour ». Tout tient dans la zone sûre
+     (cercle de 66 dp au centre). -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+    <!-- Orbite -->
+    <path
+        android:pathData="M30,54 A24,24 0 1,0 78,54 A24,24 0 1,0 30,54 Z"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeAlpha="0.28"
+        android:strokeWidth="1.6" />
+    <!-- Applis -->
     <path
         android:fillColor="#FFFF7A2E"
-        android:pathData="M40,35 H48 A4,4 0 0 1 52,39 V47 A4,4 0 0 1 48,51 H40 A4,4 0 0 1 36,47 V39 A4,4 0 0 1 40,35 Z" />
+        android:pathData="M65.37,37.03 A5.6,5.6 0 1,0 76.57,37.03 A5.6,5.6 0 1,0 65.37,37.03 Z" />
+    <path
+        android:fillColor="#FFFFC21A"
+        android:pathData="M65.37,70.97 A5.6,5.6 0 1,0 76.57,70.97 A5.6,5.6 0 1,0 65.37,70.97 Z" />
     <path
         android:fillColor="#FF31E3C3"
-        android:pathData="M60,35 H68 A4,4 0 0 1 72,39 V47 A4,4 0 0 1 68,51 H60 A4,4 0 0 1 56,47 V39 A4,4 0 0 1 60,35 Z" />
+        android:pathData="M31.43,70.97 A5.6,5.6 0 1,0 42.63,70.97 A5.6,5.6 0 1,0 31.43,70.97 Z" />
     <path
-        android:fillColor="#FF5AB0FF"
-        android:pathData="M40,55 H48 A4,4 0 0 1 52,59 V67 A4,4 0 0 1 48,71 H40 A4,4 0 0 1 36,67 V59 A4,4 0 0 1 40,55 Z" />
-    <!-- Pastille de mise à jour : flèche vers le bas -->
+        android:fillColor="#FF7FD3FF"
+        android:pathData="M31.43,37.03 A5.6,5.6 0 1,0 42.63,37.03 A5.6,5.6 0 1,0 31.43,37.03 Z" />
+    <!-- Coche au centre -->
     <path
         android:fillColor="#FF34D399"
-        android:pathData="M54,63 A10,10 0 1 0 74,63 A10,10 0 1 0 54,63 Z" />
+        android:pathData="M42.5,54 A11.5,11.5 0 1,0 65.5,54 A11.5,11.5 0 1,0 42.5,54 Z" />
     <path
-        android:fillColor="#FF0A1620"
-        android:pathData="M62.6,56.5 H65.4 V62.5 H69 L64,68.5 L59,62.5 H62.6 Z" />
+        android:pathData="M48.6,54.4 L52.4,58.2 L59.6,50.6"
+        android:strokeColor="#FF0A1022"
+        android:strokeWidth="3.2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
 </vector>
