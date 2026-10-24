@@ -19,7 +19,7 @@ data class TrackedApp(
 
 val TRACKED_APPS = listOf(
     TrackedApp("NBA", "p-bailly/NBA", "com.pbailly.superfanbasket", "basket-live.apk"),
-    TrackedApp("LoL", "p-bailly/LOL-games", "com.pbailly.riftlive", "rift-live.apk"),
+    TrackedApp("LoL Live", "p-bailly/LOL-games", "com.pbailly.riftlive", "rift-live.apk"),
     TrackedApp("Scan", "p-bailly/Scan", "fr.perso.scan", "Scan.apk"),
     TrackedApp("Météo", "p-bailly/Meteo", "io.github.pbailly.meteo", "meteo.apk"),
     TrackedApp("Nimbus", "p-bailly/Nimbus", "fr.perso.nimbus", "Nimbus.apk"),
