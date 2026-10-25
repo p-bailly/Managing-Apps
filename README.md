@@ -2,7 +2,7 @@
 
 Appli Android qui vérifie que mes applis perso sont à jour, et les met à jour d'un geste.
 
-Pour chaque appli suivie (NBA, LoL Live, Scan, Météo, Nimbus, Solfège Piano, et « Mes applis » elle-même), elle compare la date
+Pour chaque appli suivie (NBA, LoL Live, Scan, Météo, Nimbus, Solfège Piano, Scrabble, et « Mes applis » elle-même), elle compare la date
 d'installation sur le téléphone avec celle du dernier APK publié dans la release GitHub du dépôt :
 
 - **À jour** : rien à faire ;
