@@ -23,8 +23,11 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -51,6 +54,16 @@ data class AppRow(
     val busy: Boolean get() = download != null || installing
 }
 
+/**
+ * Ordre d'affichage : d'abord les applis à mettre à jour, puis les autres, chaque groupe de la
+ * publication la plus récente à la plus ancienne. Sans date de publication (vérification en cours
+ * ou en échec), une appli passe après les autres de son groupe, dans l'ordre de [TRACKED_APPS].
+ */
+fun List<AppRow>.sortedForDisplay(): List<AppRow> = sortedWith(
+    compareByDescending<AppRow> { it.status == UpdateStatus.UPDATE_AVAILABLE }
+        .thenByDescending { it.remote?.updatedAt ?: Long.MIN_VALUE }
+)
+
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val settings = SettingsStore(application)
     private val github = GitHub { settings.githubToken }
@@ -59,7 +72,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val apkDir = File(application.cacheDir, "apk")
 
     private val _rows = MutableStateFlow(TRACKED_APPS.map { AppRow(it, installed = installedVersion(it.packageName)) })
-    val rows: StateFlow<List<AppRow>> = _rows
+    val rows: StateFlow<List<AppRow>> =
+        _rows.map { it.sortedForDisplay() }.stateIn(viewModelScope, SharingStarted.Eagerly, _rows.value.sortedForDisplay())
 
     private val _token = MutableStateFlow(settings.githubToken)
     val token: StateFlow<String?> = _token
