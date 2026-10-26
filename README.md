@@ -11,6 +11,9 @@ d'installation sur le téléphone avec celle du dernier APK publié dans la rele
 
 La vérification se fait à chaque ouverture (au plus une fois par minute) et avec le bouton ⟳.
 
+La liste met en premier les applis à mettre à jour, puis les autres ; dans chaque groupe, de la publication
+la plus récente à la plus ancienne.
+
 ## Installation
 
 1. Sur le téléphone, ouvrir
