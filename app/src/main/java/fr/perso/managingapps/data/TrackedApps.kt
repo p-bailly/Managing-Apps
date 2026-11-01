@@ -26,6 +26,7 @@ val TRACKED_APPS = listOf(
     TrackedApp("Solfège Piano", "p-bailly/Musique", "fr.solfegepiano.app", "SolfegePiano.apk"),
     TrackedApp("Scrabble", "p-bailly/Scrabble", "fr.perso.scrabble", "scrabble.apk"),
     TrackedApp("Prépa Agreg", "p-bailly/Prepa-Agreg", "fr.perso.prepaagreg", "prepa-agreg.apk"),
+    TrackedApp("Cuisine", "p-bailly/Cuisine", "fr.perso.cuisine", "Cuisine.apk"),
     // Cette appli elle-même : elle se met à jour comme les autres.
     TrackedApp("Mes applis", "p-bailly/Managing-Apps", BuildConfig.APPLICATION_ID, "Managing-Apps.apk"),
 )
