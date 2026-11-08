@@ -7,8 +7,10 @@
 - **Numéro de version = nombre de commits** (`git rev-list --count HEAD`) ; le CI fait `fetch-depth: 0`. Un clone
   shallow donne un numéro faux. `checkApk` refuse un APK dont le `versionCode` est inférieur à celui installé.
 - `app/managing-apps.keystore` est **volontairement versionné** (mots de passe dans `app/build.gradle.kts`), comme
-  pour NBA, Scan et Météo : même signature partout, donc les APK s'installent les uns sur les autres. Si une appli
-  installée est signée autrement, Android répond « conflit » (message : désinstaller puis réinstaller d'ici).
+  pour NBA, Scan et Météo : chaque appli garde toujours la même clé, donc chaque APK s'installe sur le précédent. Les
+  clés diffèrent d'une appli à l'autre (une par famille : Mes applis et Cuisine, NBA et LoL, Scrabble et Prépa Agreg…) :
+  sans importance pour l'installeur. Si une appli installée est signée autrement, Android répond « conflit » (message :
+  désinstaller puis réinstaller d'ici, sûr puisque l'APK proposé a été vérifié, voir plus bas).
 
 ## Principe de comparaison
 - Les workflows publient l'APK sous le **même nom à chaque build**, sans numéro de version lisible : on compare
@@ -32,11 +34,16 @@
 - Sans confirmation (Android 12+, `USER_ACTION_NOT_REQUIRED` + permission `UPDATE_PACKAGES_WITHOUT_USER_ACTION`) :
   seulement pour une appli déjà mise à jour par celle-ci, et si le téléphone l'accepte.
 - `<queries>` du manifeste : intent MAIN, pour lire la version installée des applis qui ont un lanceur.
-- APK téléchargés dans `cacheDir/apk/<package>.apk`, supprimés après l'installation ; `checkApk` vérifie le package.
+- APK téléchargés dans `cacheDir/apk/<package>.apk`, supprimés après l'installation ; `checkApk` vérifie le package et
+  le **certificat** : l'empreinte SHA-256 lue dans l'archive doit être `certSha256` de la ligne de `TRACKED_APPS`
+  (`data/Signatures.kt`). Android ne protège pas une première installation : sans ce contrôle, un APK piégé dans une
+  release (compte ou jeton GitHub compromis) serait installé.
 
 ## Ajouter une appli suivie
 Ligne dans `TRACKED_APPS`. Son dépôt doit publier l'APK dans la dernière release, sous un nom stable (`apkName` ;
-`null` = premier `.apk`), signé avec la même clé et avec un `versionCode` croissant. Une fois la ligne poussée,
+`null` = premier `.apk`), toujours signé avec la même clé, avec un `versionCode` croissant, et l'empreinte SHA-256 de son
+certificat (`certSha256` : `apksigner verify --print-certs <apk>` sur l'APK publié, ou `keytool -list -v` sur le keystore).
+Changer la clé d'une appli = changer cette empreinte, sinon ses APK sont refusés. Une fois la ligne poussée,
 « Mes applis » propose sa propre mise à jour ; la nouvelle appli apparaît ensuite.
 
 ## Logo

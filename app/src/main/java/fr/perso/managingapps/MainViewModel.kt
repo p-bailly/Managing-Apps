@@ -3,6 +3,7 @@ package fr.perso.managingapps
 import android.app.Application
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.pm.Signature
 import android.os.SystemClock
 import androidx.core.content.pm.PackageInfoCompat
 import androidx.lifecycle.AndroidViewModel
@@ -14,6 +15,8 @@ import fr.perso.managingapps.data.RemoteApk
 import fr.perso.managingapps.data.SettingsStore
 import fr.perso.managingapps.data.TRACKED_APPS
 import fr.perso.managingapps.data.TrackedApp
+import fr.perso.managingapps.data.sha256Hex
+import fr.perso.managingapps.data.signedBy
 import fr.perso.managingapps.data.UpdateStatus
 import fr.perso.managingapps.data.updateStatus
 import fr.perso.managingapps.install.ApkInstaller
@@ -172,7 +175,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    /** Refuse l'APK d'une autre appli, ou plus ancien que la version installée (Android le refuserait). */
+    /**
+     * Refuse l'APK d'une autre appli, signé par une autre clé que celle attendue (APK piégé dans une release : Android
+     * ne protège pas une première installation), ou plus ancien que la version installée (Android le refuserait).
+     */
     private fun checkApk(app: TrackedApp, apk: File) {
         @Suppress("DEPRECATION")
         val info = packageManager.getPackageArchiveInfo(apk.path, 0)
@@ -180,12 +186,29 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         if (info.packageName != app.packageName) {
             throw GitHubException("L'APK publié est celui d'une autre appli (${info.packageName})")
         }
+        if (!signedBy(app.certSha256, signingDigests(apk))) {
+            throw GitHubException("L'APK publié n'est pas signé par la clé attendue : il n'est pas installé")
+        }
         val installed = installedVersion(app.packageName)
         if (installed != null && PackageInfoCompat.getLongVersionCode(info) < installed.versionCode) {
             throw GitHubException(
                 "L'APK publié (${info.versionName}) est plus ancien que la version installée (${installed.versionName})"
             )
         }
+    }
+
+    /** Empreintes SHA-256 des certificats qui signent l'archive [apk] (vide si Android ne peut pas les lire). */
+    @Suppress("DEPRECATION")
+    private fun signingDigests(apk: File): List<String> {
+        val signingInfo = packageManager.getPackageArchiveInfo(apk.path, PackageManager.GET_SIGNING_CERTIFICATES)?.signingInfo
+        val certificates: List<Signature> = when {
+            // Certaines versions d'Android ne remplissent pas signingInfo pour une archive : l'ancien champ y supplée.
+            signingInfo == null ->
+                packageManager.getPackageArchiveInfo(apk.path, PackageManager.GET_SIGNATURES)?.signatures?.toList().orEmpty()
+            signingInfo.hasMultipleSigners() -> signingInfo.apkContentsSigners?.toList().orEmpty()
+            else -> signingInfo.signingCertificateHistory?.toList().orEmpty()
+        }
+        return certificates.map { sha256Hex(it.toByteArray()) }
     }
 
     private fun installedVersion(packageName: String): InstalledVersion? = try {
