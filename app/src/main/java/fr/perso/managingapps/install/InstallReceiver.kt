@@ -51,7 +51,10 @@ class InstallReceiver : BroadcastReceiver() {
     private fun failureMessage(status: Int, detail: String?) = when (status) {
         PackageInstaller.STATUS_FAILURE_ABORTED -> "installation annulée"
         PackageInstaller.STATUS_FAILURE_CONFLICT ->
-            "l'appli installée n'a pas la même signature : désinstalle-la puis réinstalle-la d'ici"
+            // L'APK proposé a déjà été vérifié (clé attendue, voir checkApk) : c'est l'appli installée qui a été signée
+            // par une autre clé. La remplacer par la version publiée est donc sûr, mais efface ses données.
+            "l'appli installée a été signée par une autre clé que la version publiée (vérifiée) : " +
+                "désinstalle-la puis réinstalle-la d'ici (ses données seront effacées)"
         PackageInstaller.STATUS_FAILURE_INCOMPATIBLE -> "APK incompatible avec ce téléphone"
         PackageInstaller.STATUS_FAILURE_STORAGE -> "espace de stockage insuffisant"
         PackageInstaller.STATUS_FAILURE_INVALID -> "APK invalide"

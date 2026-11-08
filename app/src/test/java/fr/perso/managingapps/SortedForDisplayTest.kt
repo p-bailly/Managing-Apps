@@ -8,7 +8,7 @@ import org.junit.Test
 
 class SortedForDisplayTest {
     private fun row(name: String, published: Long?, installedAt: Long?) = AppRow(
-        app = TrackedApp(name, "p-bailly/$name", "fr.perso.$name"),
+        app = TrackedApp(name, "p-bailly/$name", "fr.perso.$name", apkName = null, certSha256 = "00".repeat(32)),
         installed = installedAt?.let { InstalledVersion("1.0", 1, lastUpdateTime = it) },
         remote = published?.let { RemoteApk(size = 1, updatedAt = it, downloadUrl = "", viaApi = false) },
     )
