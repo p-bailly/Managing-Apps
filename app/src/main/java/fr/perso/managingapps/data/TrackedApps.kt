@@ -41,6 +41,8 @@ val TRACKED_APPS = listOf(
         "0bd9375bf39cc9bad5f55b5a484646509f8174765c66476c7b6885bc8685178c"),
     TrackedApp("Prépa Agreg", "p-bailly/Prepa-Agreg", "fr.perso.prepaagreg", "prepa-agreg.apk",
         "0bd9375bf39cc9bad5f55b5a484646509f8174765c66476c7b6885bc8685178c"),
+    TrackedApp("Toc", "p-bailly/Toc", "fr.perso.toc", "toc.apk",
+        "b61853e18bb57a5a6a074a150b9e3868b358e764d37e9e3be2eca02b89259d28"),
     TrackedApp("Cuisine", "p-bailly/Cuisine", "fr.perso.cuisine", "Cuisine.apk",
         "4661bff2e5667d7b99ab271c726ae4c398a50e972372f3482557b927da2997d0"),
     // Cette appli elle-même : elle se met à jour comme les autres.
